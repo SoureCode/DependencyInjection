@@ -1,0 +1,8 @@
+# IDE
+.idea/
+
+# Vendor
+node_modules/
+
+# Build
+dist/
