@@ -10,6 +10,6 @@
 /**
  * @ignore
  */
-export interface InjectableIndex {
+export interface ServiceIndex {
     [key: number]: string;
 }

@@ -7,10 +7,10 @@
  * File that was distributed with this source code.
  */
 
-import {Injectable} from "../../src/Components/DependencyInjection/Decorator/Injectable";
+import {Service} from "../../src/Components/DependencyInjection/Decorator/Service";
 import {PasswordStrategyInterface} from "./PasswordStrategyInterface";
 
-@Injectable({name: "strategy.two", tags: ["strategy"]})
+@Service({name: "strategy.two", tags: ["strategy"]})
 export class PasswordStrategyTwo implements PasswordStrategyInterface {
 
     public hash(password: string) {

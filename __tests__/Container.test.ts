@@ -7,12 +7,12 @@
  * File that was distributed with this source code.
  */
 
-import {Container, ContainerBuilder, Inject, Injectable} from "../src";
+import {Container, ContainerBuilder, Inject, Service} from "../src";
 import {PasswordStrategyInterface} from "./Fixture/PasswordStrategyInterface";
 import {PasswordStrategyOne} from "./Fixture/PasswordStrategyOne";
 import {PasswordStrategyTwo} from "./Fixture/PasswordStrategyTwo";
 
-@Injectable({name: "password.hash"})
+@Service({name: "password.hash"})
 class PasswordHash {
 
     @Inject("@strategy.one")
@@ -80,7 +80,7 @@ describe("DependencyInjection", () => {
         const builder = new ContainerBuilder();
         const container = new Container(builder);
 
-        @Injectable({name: "test"})
+        @Service({name: "test"})
         class Foo {
             @Inject({invalid: true} as any)
             protected test: string;
@@ -96,7 +96,7 @@ describe("DependencyInjection", () => {
         const builder = new ContainerBuilder();
         const container = new Container(builder);
 
-        @Injectable({name: "test"})
+        @Service({name: "test"})
         class Foo {
             protected test: number = Math.random();
         }
@@ -112,7 +112,7 @@ describe("DependencyInjection", () => {
         const builder = new ContainerBuilder();
         const container = new Container(builder);
 
-        @Injectable({name: "test", shared: false})
+        @Service({name: "test", shared: false})
         class Foo {
             protected test: number = Math.random();
         }
@@ -132,7 +132,7 @@ describe("DependencyInjection", () => {
             name: string;
         }
 
-        @Injectable({name: "bar"})
+        @Service({name: "bar"})
         class OriginalBar implements BarInterface {
             public name: string = "original";
         }
@@ -141,7 +141,7 @@ describe("DependencyInjection", () => {
             protected name: string = "changed";
         }
 
-        @Injectable({name: "foo"})
+        @Service({name: "foo"})
         class Foo {
             @Inject("@bar")
             protected bar: BarInterface;

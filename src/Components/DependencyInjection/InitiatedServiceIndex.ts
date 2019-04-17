@@ -12,6 +12,6 @@ import {InitiatedService} from "./InitiatedService";
 /**
  * @ignore
  */
-export interface ServiceIndex {
+export interface InitiatedServiceIndex {
     [name: string]: InitiatedService;
 }

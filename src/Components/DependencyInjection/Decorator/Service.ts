@@ -10,15 +10,15 @@
 import {ServiceOptions} from "../ServiceOptions";
 import {tagInjectable} from "./Utils";
 
-export function Injectable(options: Partial<ServiceOptions>) {
+export function Service(options: Partial<ServiceOptions>) {
     return function (target: any) {
         tagInjectable(target, options);
         return target;
     };
 }
 
-Injectable.OPTIONS = "injectable.options";
-Injectable.DEFAULT = {
+Service.OPTIONS = "servcice.options";
+Service.DEFAULT = {
     lazy: true,
     shared: true,
     tags: [],

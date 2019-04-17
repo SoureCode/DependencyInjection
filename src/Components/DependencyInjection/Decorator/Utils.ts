@@ -8,9 +8,9 @@
  */
 
 import {Inject} from "./Inject";
-import {InjectableIndex} from "./InjectableIndex";
+import {ServiceIndex} from "./ServiceIndex";
 import {ServiceOptions} from "../ServiceOptions";
-import {Injectable} from "./Injectable";
+import {Service} from "./Service";
 
 /**
  * @ignore
@@ -20,9 +20,9 @@ export function tagInjectable(target: any, options: Partial<ServiceOptions>) {
         target = target.prototype;
     }
 
-    if (!Reflect.hasMetadata(Injectable.OPTIONS, target)) {
-        Reflect.defineMetadata(Injectable.OPTIONS, {
-            ...Injectable.DEFAULT,
+    if (!Reflect.hasMetadata(Service.OPTIONS, target)) {
+        Reflect.defineMetadata(Service.OPTIONS, {
+            ...Service.DEFAULT,
             ...options
         } as ServiceOptions, target);
     }
@@ -40,7 +40,7 @@ export function tagInjectConstructor(target: any, name: string, index: number) {
         Reflect.defineMetadata(Inject.CONSTRUCTOR, {}, target);
     }
 
-    const properties: InjectableIndex = Reflect.getMetadata(Inject.CONSTRUCTOR, target);
+    const properties: ServiceIndex = Reflect.getMetadata(Inject.CONSTRUCTOR, target);
     properties[index] = name;
     Reflect.defineMetadata(Inject.CONSTRUCTOR, properties, target);
 }
@@ -57,7 +57,7 @@ export function tagInjectProperty(target: any, name: string, key: string | symbo
         Reflect.defineMetadata(Inject.PROPERTY, {}, target);
     }
 
-    const properties: InjectableIndex = Reflect.getMetadata(Inject.PROPERTY, target);
+    const properties: ServiceIndex = Reflect.getMetadata(Inject.PROPERTY, target);
     properties[key] = name;
     Reflect.defineMetadata(Inject.PROPERTY, properties, target);
 }

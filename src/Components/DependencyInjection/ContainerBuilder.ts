@@ -10,17 +10,17 @@
 import {AbstractRepository} from "../Repository";
 import {ServiceDefinition} from "./ServiceDefinition";
 import {Constructable} from "./Constructable";
-import {Injectable} from "./Decorator/Injectable";
+import {Service} from "./Decorator/Service";
 import {ServiceOptions} from "./ServiceOptions";
 import {ContainerBuilderInterface} from "./ContainerBuilderInterface";
 
 export class ContainerBuilder extends AbstractRepository<ServiceDefinition> implements ContainerBuilderInterface {
 
     public add<T = any>(injectable: Constructable<T>, options?: Partial<ServiceOptions>): this {
-        const definedOpts = Reflect.getMetadata(Injectable.OPTIONS, injectable.prototype);
+        const definedOpts = Reflect.getMetadata(Service.OPTIONS, injectable.prototype);
 
         const opts: ServiceOptions = {
-            ...Injectable.DEFAULT,
+            ...Service.DEFAULT,
             ...definedOpts,
             ...options
         };

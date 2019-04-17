@@ -14,5 +14,5 @@ export * from "./DependencyInjection/ContainerBuilderInterface";
 export * from "./DependencyInjection/ContainerInterface";
 export * from "./DependencyInjection/Container";
 
-export * from "./DependencyInjection/Decorator/Injectable";
+export * from "./DependencyInjection/Decorator/Service";
 export * from "./DependencyInjection/Decorator/Inject";

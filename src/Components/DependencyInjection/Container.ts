@@ -9,20 +9,21 @@
 
 import {AbstractParameterStorage} from "../Parameter";
 import {ServiceDefinition} from "./ServiceDefinition";
-import {InjectableIndex} from "./Decorator/InjectableIndex";
 import {InitiatedService} from "./InitiatedService";
-import {Injectable} from "./Decorator/Injectable";
+import {Service} from "./Decorator/Service";
 import {ServiceOptions} from "./ServiceOptions";
 import {Constructable} from "./Constructable";
 import {ContainerBuilderInterface} from "./ContainerBuilderInterface";
-import {ServiceIndex} from "./ServiceIndex";
+import {InitiatedServiceIndex} from "./InitiatedServiceIndex";
 import {ContainerInterface} from "./ContainerInterface";
+import {ServiceIndex} from "./Decorator/ServiceIndex";
+import {Inject} from "./Decorator/Inject";
 
 export class Container extends AbstractParameterStorage implements ContainerInterface {
 
     protected builder: ContainerBuilderInterface;
 
-    protected services: ServiceIndex = {};
+    protected services: InitiatedServiceIndex = {};
 
     public constructor(builder: ContainerBuilderInterface) {
         super();
@@ -51,10 +52,10 @@ export class Container extends AbstractParameterStorage implements ContainerInte
             throw new Error(`Service name "container" is reserved.`);
         }
 
-        const definedOpts = Reflect.getMetadata(Injectable.OPTIONS, service.constructor.prototype);
+        const definedOpts = Reflect.getMetadata(Service.OPTIONS, service.constructor.prototype);
 
         const options: ServiceOptions = {
-            ...Injectable.DEFAULT,
+            ...Service.DEFAULT,
             ...definedOpts,
         };
 
@@ -132,7 +133,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     }
 
     protected resolveConstructorArguments(definition: ServiceDefinition): any[] {
-        const index: InjectableIndex = Reflect.getMetadata("injection.constructor", definition.getPrototype());
+        const index: ServiceIndex = Reflect.getMetadata(Inject.CONSTRUCTOR, definition.getPrototype());
         if (index) {
             return Object.keys(index)
                 .map(key => this.resolveService(index[key]));
@@ -142,7 +143,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     }
 
     protected injectProperties<T>(definition: ServiceDefinition<T>, initiated: T) {
-        const index: InjectableIndex = Reflect.getMetadata("injection.property", definition.getPrototype());
+        const index: ServiceIndex = Reflect.getMetadata(Inject.PROPERTY, definition.getPrototype());
         if (index) {
             const keys = Object.keys(index);
             for (const key of keys) {
