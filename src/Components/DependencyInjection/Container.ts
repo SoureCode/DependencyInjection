@@ -30,6 +30,10 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     }
 
     public get<T>(name: string): T {
+        if (name === "container") {
+            return this as any as T; // @todo mhmm...
+        }
+
         const definition = this.builder.get(name);
         try {
             return this.resolveDefinition(definition);
@@ -43,6 +47,10 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     }
 
     public set<T>(name: string, service: T): this {
+        if (name === "container") {
+            throw new Error(`Service name "container" is reserved.`);
+        }
+
         const definedOpts = Reflect.getMetadata(Injectable.OPTIONS, service.constructor.prototype);
 
         const options: ServiceOptions = {
