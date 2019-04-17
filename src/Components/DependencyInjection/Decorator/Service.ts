@@ -8,11 +8,11 @@
  */
 
 import {ServiceOptions} from "../ServiceOptions";
-import {tagInjectable} from "./Utils";
+import {tagService} from "./Utils";
 
 export function Service(options: Partial<ServiceOptions>) {
     return function (target: any) {
-        tagInjectable(target, options);
+        tagService(target, options);
         return target;
     };
 }

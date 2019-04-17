@@ -15,12 +15,12 @@ import {Service} from "./Service";
 /**
  * @ignore
  */
-export function tagInjectable(target: any, options: Partial<ServiceOptions>) {
+export function tagService(target: any, options: Partial<ServiceOptions>) {
     if (target.prototype) {
         target = target.prototype;
     }
 
-    if (!Reflect.hasMetadata(Service.OPTIONS, target)) {
+    if (!Reflect.hasOwnMetadata(Service.OPTIONS, target)) {
         Reflect.defineMetadata(Service.OPTIONS, {
             ...Service.DEFAULT,
             ...options
@@ -36,11 +36,11 @@ export function tagInjectConstructor(target: any, name: string, index: number) {
         target = target.prototype;
     }
 
-    if (!Reflect.hasMetadata(Inject.CONSTRUCTOR, target)) {
+    if (!Reflect.hasOwnMetadata(Inject.CONSTRUCTOR, target)) {
         Reflect.defineMetadata(Inject.CONSTRUCTOR, {}, target);
     }
 
-    const properties: ServiceIndex = Reflect.getMetadata(Inject.CONSTRUCTOR, target);
+    const properties: ServiceIndex = Reflect.getOwnMetadata(Inject.CONSTRUCTOR, target);
     properties[index] = name;
     Reflect.defineMetadata(Inject.CONSTRUCTOR, properties, target);
 }
@@ -53,11 +53,34 @@ export function tagInjectProperty(target: any, name: string, key: string | symbo
         target = target.prototype;
     }
 
-    if (!Reflect.hasMetadata(Inject.PROPERTY, target)) {
+    if (!Reflect.hasOwnMetadata(Inject.PROPERTY, target)) {
         Reflect.defineMetadata(Inject.PROPERTY, {}, target);
     }
 
-    const properties: ServiceIndex = Reflect.getMetadata(Inject.PROPERTY, target);
+    const properties: ServiceIndex = Reflect.getOwnMetadata(Inject.PROPERTY, target);
     properties[key] = name;
     Reflect.defineMetadata(Inject.PROPERTY, properties, target);
+}
+
+/**
+ * @ignore
+ */
+export function getServiceIndex(metadataKey: any, target: Object): ServiceIndex | null {
+    let index: ServiceIndex = {};
+
+    let current = target;
+    while (current !== null) {
+        index = {
+            ...Reflect.getOwnMetadata(metadataKey, current),
+            ...index,
+        };
+
+        current = Reflect.getPrototypeOf(current);
+    }
+
+    if (Object.keys(index).length === 0) {
+        return null;
+    }
+
+    return index;
 }

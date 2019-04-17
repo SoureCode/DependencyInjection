@@ -18,6 +18,7 @@ import {InitiatedServiceIndex} from "./InitiatedServiceIndex";
 import {ContainerInterface} from "./ContainerInterface";
 import {ServiceIndex} from "./Decorator/ServiceIndex";
 import {Inject} from "./Decorator/Inject";
+import {getServiceIndex} from "./Decorator/Utils";
 
 export class Container extends AbstractParameterStorage implements ContainerInterface {
 
@@ -133,7 +134,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     }
 
     protected resolveConstructorArguments(definition: ServiceDefinition): any[] {
-        const index: ServiceIndex = Reflect.getMetadata(Inject.CONSTRUCTOR, definition.getPrototype());
+        const index: ServiceIndex | null = getServiceIndex(Inject.CONSTRUCTOR, definition.getPrototype());
         if (index) {
             return Object.keys(index)
                 .map(key => this.resolveService(index[key]));
@@ -143,7 +144,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     }
 
     protected injectProperties<T>(definition: ServiceDefinition<T>, initiated: T) {
-        const index: ServiceIndex = Reflect.getMetadata(Inject.PROPERTY, definition.getPrototype());
+        const index: ServiceIndex | null = getServiceIndex(Inject.PROPERTY, definition.getPrototype());
         if (index) {
             const keys = Object.keys(index);
             for (const key of keys) {
