@@ -17,7 +17,7 @@ export function Service(options: Partial<ServiceOptions>) {
     };
 }
 
-Service.OPTIONS = "servcice.options";
+Service.OPTIONS = "service.options";
 Service.DEFAULT = {
     lazy: true,
     shared: true,
