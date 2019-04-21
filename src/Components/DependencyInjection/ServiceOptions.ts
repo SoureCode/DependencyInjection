@@ -10,6 +10,7 @@
 export interface ServiceOptions {
     name: string;
     shared: boolean;
+    private: boolean;
     tags: string[];
     aliases: string[];
 }

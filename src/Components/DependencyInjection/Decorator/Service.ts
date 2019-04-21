@@ -21,6 +21,7 @@ Service.OPTIONS = "service.options";
 Service.DEFAULT = {
     lazy: true,
     shared: true,
+    private: true,
     tags: [],
     aliases: [],
 };

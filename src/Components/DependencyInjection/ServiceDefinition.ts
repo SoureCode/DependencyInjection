@@ -41,6 +41,10 @@ export class ServiceDefinition<T = any> {
         return this.options.tags.indexOf(tag) > -1;
     }
 
+    public isPrivate(): boolean {
+        return this.options.private;
+    }
+
     public hasAlias(name: string) {
         return this.options.aliases.indexOf(name) > -1;
     }
