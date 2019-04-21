@@ -162,4 +162,40 @@ describe("DependencyInjection", () => {
         expect(bar.name).toBe("changed");
     });
 
+    it("inject with a setter", () => {
+        const builder = new ContainerBuilder();
+
+        @Service({name: "bar", private: false})
+        class Bar {
+            public name: string = "bbaar";
+        }
+
+        @Service({name: "foo", private: false})
+        class Foo {
+
+            protected bar: Bar;
+
+            @Inject("@bar")
+            public setBar(bar: Bar) {
+                this.bar = bar;
+            }
+
+            public getBar() {
+                return this.bar;
+            }
+        }
+
+        builder.add(Foo);
+        builder.add(Bar);
+
+        const container = new Container(builder);
+
+        const foo = container.get<Foo>("foo");
+        const bar = foo.getBar();
+
+        expect(foo).toBeInstanceOf(Foo);
+        expect(bar).toBeInstanceOf(Bar);
+        expect(bar.name).toBe("bbaar");
+    });
+
 });

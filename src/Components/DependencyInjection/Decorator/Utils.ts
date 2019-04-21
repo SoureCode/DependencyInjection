@@ -65,6 +65,23 @@ export function tagInjectProperty(target: any, name: string, key: string | symbo
 /**
  * @ignore
  */
+export function tagInjectMethod(target: any, name: string, key: string | symbol) {
+    if (target.prototype) {
+        target = target.prototype;
+    }
+
+    if (!Reflect.hasOwnMetadata(Inject.METHOD, target)) {
+        Reflect.defineMetadata(Inject.METHOD, {}, target);
+    }
+
+    const methods: ServiceIndex = Reflect.getOwnMetadata(Inject.METHOD, target);
+    methods[key] = name;
+    Reflect.defineMetadata(Inject.METHOD, methods, target);
+}
+
+/**
+ * @ignore
+ */
 export function getServiceIndex(metadataKey: any, target: Object): ServiceIndex | null {
     let index: ServiceIndex = {};
 
