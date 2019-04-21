@@ -42,15 +42,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
             throw new Error(`Could not get service "${name}". You should either make it public, or stop using the container directly and use dependency injection instead.`);
         }
 
-        try {
-            return this.resolveDefinition(definition);
-        } catch (error) {
-            if (error.message === "Service not found.") {
-                throw new Error(`Service "${name}" not found.`);
-            } else {
-                throw error;
-            }
-        }
+        return this.resolveDefinition(name, definition);
     }
 
     public set<T>(name: string, service: T | null): this {
@@ -92,6 +84,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         const definition = new ServiceDefinition<T>(service.constructor as Constructable<T>, options);
 
         this.injectProperties(definition, service);
+        this.injectMethods(definition, service);
 
         this.services[name] = {
             service,
@@ -101,7 +94,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         return this;
     }
 
-    protected resolveDefinition<T>(definition: ServiceDefinition | null): T {
+    protected resolveDefinition<T>(name: string, definition: ServiceDefinition | null): T {
         if (!definition) {
             throw new Error(`Service not found.`);
         }
@@ -130,6 +123,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         const args = this.resolveConstructorArguments(definition);
         const initiated = new constructor(...args);
         this.injectProperties(definition, initiated);
+        this.injectMethods(definition, initiated);
 
         return initiated;
     }
@@ -149,11 +143,13 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         // noinspection SuspiciousTypeOfGuard
         if (typeof name === "string") {
             if (name.startsWith("@")) {
-                return this.resolveDefinition(this.builder.get(name.slice(1)));
+                const realName = name.slice(1);
+                return this.resolveDefinition(realName, this.builder.get(realName));
             } else if (name.startsWith("!")) {
+                const realName = name.slice(1);
                 return this.builder
-                    .getByTag(name.slice(1))
-                    .map(definition => this.resolveDefinition(definition));
+                    .getByTag(realName)
+                    .map(definition => this.resolveDefinition(realName, definition));
             } else if (name.startsWith("%") && name.endsWith("%")) {
                 return this.getParameter(name.slice(1, -1));
             }
@@ -170,6 +166,16 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         }
 
         return [];
+    }
+
+    protected injectMethods<T>(definition: ServiceDefinition<T>, initiated: T) {
+        const index: ServiceIndex | null = getServiceIndex(Inject.METHOD, definition.getPrototype());
+        if (index) {
+            const keys = Object.keys(index);
+            for (const key of keys) {
+                initiated[key](this.resolveService(index[key]));
+            }
+        }
     }
 
     protected injectProperties<T>(definition: ServiceDefinition<T>, initiated: T) {

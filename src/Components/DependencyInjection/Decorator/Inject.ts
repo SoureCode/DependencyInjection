@@ -7,12 +7,18 @@
  * File that was distributed with this source code.
  */
 
-import {tagInjectConstructor, tagInjectProperty} from "./Utils";
+import {tagInjectConstructor, tagInjectMethod, tagInjectProperty} from "./Utils";
 
 export function Inject(name: string) {
-    return function (target: Object, key: string | symbol, index?: number) {
+    return function (target: Object, key: string | symbol, index?: number | PropertyDescriptor) {
         if (typeof index === "number") {
             tagInjectConstructor(target, name, index);
+        } else if (typeof index !== "undefined") {
+            if (!index.writable) {
+                throw new Error(`Can not inject "${name}" into private or protected methods.`);
+            }
+
+            tagInjectMethod(target, name, key);
         } else {
             tagInjectProperty(target, name, key);
         }
@@ -22,3 +28,4 @@ export function Inject(name: string) {
 
 Inject.CONSTRUCTOR = "inject.constructor";
 Inject.PROPERTY = "inject.property";
+Inject.METHOD = "inject.method";
