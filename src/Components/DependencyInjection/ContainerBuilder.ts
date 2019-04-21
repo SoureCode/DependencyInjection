@@ -24,6 +24,16 @@ export class ContainerBuilder extends AbstractRepository<ServiceDefinition> impl
 
     protected fileLoader: FileLoaderInterface = new FileLoader();
 
+    protected static extractName(directory: string, file: string, property: string) {
+        const relativePath = path.relative(directory, file).slice(0, -path.extname(file).length);
+        let name: PropertyPathInterface = new PropertyPath(relativePath.replace(/[/\\]/g, "."));
+
+        if (property !== "default" && property !== path.basename(file, path.extname(file))) {
+            name = name.child(property);
+        }
+        return name;
+    }
+
     public add<T = any>(injectable: Constructable<T>, options?: Partial<ServiceOptions>): this {
         const definedOpts = Reflect.getMetadata(Service.OPTIONS, injectable.prototype);
 
@@ -44,16 +54,6 @@ export class ContainerBuilder extends AbstractRepository<ServiceDefinition> impl
         this.items.push(new ServiceDefinition(injectable, opts));
 
         return this;
-    }
-
-    protected static extractName(directory: string, file: string, property: string) {
-        const relativePath = path.relative(directory, file).slice(0, -path.extname(file).length);
-        let name: PropertyPathInterface = new PropertyPath(relativePath.replace(/[/\\]/g, "."));
-
-        if (property !== "default" && property !== path.basename(file, path.extname(file))) {
-            name = name.child(property);
-        }
-        return name;
     }
 
     public get<T = any>(name: string): ServiceDefinition<T> | null {
@@ -101,6 +101,14 @@ export class ContainerBuilder extends AbstractRepository<ServiceDefinition> impl
             }
         }
 
+        return this;
+    }
+
+    public remove(name: string): this {
+        const definition = this.get(name);
+        if (definition) {
+            delete this.items[definition.getName()];
+        }
         return this;
     }
 

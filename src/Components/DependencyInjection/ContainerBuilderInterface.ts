@@ -19,6 +19,8 @@ export interface ContainerBuilderInterface extends RepositoryInterface<ServiceDe
 
     addDirectory(directory: string, options?: Partial<FileLoaderOptions>): this;
 
+    remove(name: string): this;
+
     get<T = any>(name: string): ServiceDefinition<T> | null;
 
     getByTag<T = any>(tag: string): ServiceDefinition<T>[];

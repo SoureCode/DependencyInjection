@@ -74,9 +74,9 @@ describe("Inheritance", () => {
     it("parent inject", () => {
         const builder = new ContainerBuilder();
 
-        builder.add(Foo);
-        builder.add(Lorem);
-        builder.add(Ipsum);
+        builder.add(Foo, {private: false});
+        builder.add(Lorem, {private: false});
+        builder.add(Ipsum, {private: false});
 
         const container = new Container(builder);
 

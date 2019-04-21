@@ -57,7 +57,7 @@ describe("DependencyInjection", () => {
         const builder = new ContainerBuilder();
         const container = new Container(builder);
 
-        builder.add(PasswordHash);
+        builder.add(PasswordHash, {private: false});
         builder.add(PasswordStrategyOne, {name: 'strategy.one', tags: ["strategy"]});
         builder.add(PasswordStrategyTwo);
 
@@ -80,7 +80,7 @@ describe("DependencyInjection", () => {
         const builder = new ContainerBuilder();
         const container = new Container(builder);
 
-        @Service({name: "test"})
+        @Service({name: "test", private: false})
         class Foo {
             @Inject({invalid: true} as any)
             protected test: string;
@@ -96,7 +96,7 @@ describe("DependencyInjection", () => {
         const builder = new ContainerBuilder();
         const container = new Container(builder);
 
-        @Service({name: "test"})
+        @Service({name: "test", private: false})
         class Foo {
             protected test: number = Math.random();
         }
@@ -112,7 +112,7 @@ describe("DependencyInjection", () => {
         const builder = new ContainerBuilder();
         const container = new Container(builder);
 
-        @Service({name: "test", shared: false})
+        @Service({name: "test", shared: false, private: false})
         class Foo {
             protected test: number = Math.random();
         }
@@ -132,7 +132,7 @@ describe("DependencyInjection", () => {
             name: string;
         }
 
-        @Service({name: "bar"})
+        @Service({name: "bar", private: false})
         class OriginalBar implements BarInterface {
             public name: string = "original";
         }
@@ -141,7 +141,7 @@ describe("DependencyInjection", () => {
             protected name: string = "changed";
         }
 
-        @Service({name: "foo"})
+        @Service({name: "foo", private: false})
         class Foo {
             @Inject("@bar")
             protected bar: BarInterface;

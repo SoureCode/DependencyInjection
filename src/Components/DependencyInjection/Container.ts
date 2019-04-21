@@ -32,11 +32,16 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     }
 
     public get<T>(name: string): T {
-        if (name === "container") {
+        if (name === "service_container") {
             return this as any as T; // @todo mhmm...
         }
 
         const definition = this.builder.get(name);
+
+        if (definition && definition.isPrivate()) {
+            throw new Error(`Could not get service "${name}". You should either make it public, or stop using the container directly and use dependency injection instead.`);
+        }
+
         try {
             return this.resolveDefinition(definition);
         } catch (error) {
@@ -48,11 +53,35 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         }
     }
 
-    public set<T>(name: string, service: T): this {
-        if (name === "container") {
-            throw new Error(`Service name "container" is reserved.`);
+    public set<T>(name: string, service: T | null): this {
+        if (name === "service_container") {
+            throw new Error(`You cannot set service "service_container".`);
         }
 
+        const oldServiceDefinition = this.builder.get(name);
+
+        if (service === null) {
+            if (oldServiceDefinition) {
+                if (oldServiceDefinition.isPrivate()) {
+                    throw new Error(`The "${name}" service is private, you cannot unset it.`);
+                } else {
+                    this.builder.remove(name);
+                }
+            }
+            return this;
+        }
+
+        if (oldServiceDefinition) {
+            if (oldServiceDefinition.isPrivate()) {
+                throw new Error(`The "${name}" service is private, you cannot replace it.`)
+            }
+
+            const initiatedService = this.getInitiatedService<T>(oldServiceDefinition);
+            if (initiatedService) {
+                throw new Error(`The "${name}" service is already initialized, you cannot replace it.`);
+
+            }
+        }
         const definedOpts = Reflect.getMetadata(Service.OPTIONS, service.constructor.prototype);
 
         const options: ServiceOptions = {
@@ -120,7 +149,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         // noinspection SuspiciousTypeOfGuard
         if (typeof name === "string") {
             if (name.startsWith("@")) {
-                return this.get(name.slice(1));
+                return this.resolveDefinition(this.builder.get(name.slice(1)));
             } else if (name.startsWith("!")) {
                 return this.builder
                     .getByTag(name.slice(1))
