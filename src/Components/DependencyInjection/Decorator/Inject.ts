@@ -20,5 +20,5 @@ export function Inject(name: string) {
     }
 }
 
-Inject.CONSTRUCTOR = "injection.constructor";
-Inject.PROPERTY = "injection.property";
+Inject.CONSTRUCTOR = "inject.constructor";
+Inject.PROPERTY = "inject.property";
