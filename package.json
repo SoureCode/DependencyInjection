@@ -27,8 +27,6 @@
     "yarn.lock"
   ],
   "scripts": {
-    "prepack": "yarn run clean && yarn run build && yarn run test",
-    "clean": "rm -rf dist && rm -rf node_modules && yarn",
     "test": "jest",
     "build": "tsc",
     "watch": "tsc --watch",
