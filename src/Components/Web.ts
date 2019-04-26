@@ -7,10 +7,9 @@
  * File that was distributed with this source code.
  */
 
-import "reflect-metadata";
-
-export * from "./Components/DependencyInjection";
-export * from "./Components/Parameter";
-export * from "./Components/PropertyAccess";
-export * from "./Components/Repository";
-export * from "./Components/Web";
+export * from "./Web/WebServerOptions";
+export * from "./Web/WebServer";
+export * from "./Web/ControllerInterface";
+export * from "./Web/RequestMethod";
+export * from "./Web/RouteOptions";
+export * from "./Web/Decorator/Route";

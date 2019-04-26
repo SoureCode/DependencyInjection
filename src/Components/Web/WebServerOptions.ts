@@ -7,10 +7,11 @@
  * File that was distributed with this source code.
  */
 
-import "reflect-metadata";
-
-export * from "./Components/DependencyInjection";
-export * from "./Components/Parameter";
-export * from "./Components/PropertyAccess";
-export * from "./Components/Repository";
-export * from "./Components/Web";
+export interface WebServerOptions {
+    http: {
+        port: number;
+    },
+    // https: { @todo
+    //     port: number;
+    // }
+}
