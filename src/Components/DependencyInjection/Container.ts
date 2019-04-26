@@ -50,35 +50,35 @@ export class Container extends AbstractParameterStorage implements ContainerInte
             throw new Error(`You cannot set service "service_container".`);
         }
 
-        const oldServiceDefinition = this.builder.get(name);
+        const currentDefinition = this.builder.get(name);
 
         if (service === null) {
-            if (oldServiceDefinition) {
-                if (oldServiceDefinition.isPrivate()) {
+            if (currentDefinition) {
+                if (currentDefinition.isPrivate()) {
                     throw new Error(`The "${name}" service is private, you cannot unset it.`);
                 } else {
-                    this.builder.remove(name);
+                    delete this.services[name];
                 }
             }
             return this;
         }
 
-        if (oldServiceDefinition) {
-            if (oldServiceDefinition.isPrivate()) {
+        if (currentDefinition) {
+            if (currentDefinition.isPrivate()) {
                 throw new Error(`The "${name}" service is private, you cannot replace it.`)
             }
 
-            const initiatedService = this.getInitiatedService<T>(oldServiceDefinition);
+            const initiatedService = this.getInitiatedService<T>(currentDefinition);
             if (initiatedService) {
                 throw new Error(`The "${name}" service is already initialized, you cannot replace it.`);
 
             }
         }
-        const definedOpts = Reflect.getMetadata(Service.OPTIONS, service.constructor.prototype);
+        const definedOptions = Reflect.getMetadata(Service.OPTIONS, service.constructor.prototype);
 
         const options: ServiceOptions = {
             ...Service.DEFAULT,
-            ...definedOpts,
+            ...definedOptions,
         };
 
         const definition = new ServiceDefinition<T>(service.constructor as Constructable<T>, options);
@@ -96,7 +96,7 @@ export class Container extends AbstractParameterStorage implements ContainerInte
 
     protected resolveDefinition<T>(name: string, definition: ServiceDefinition | null): T {
         if (!definition) {
-            throw new Error(`Service not found.`);
+            throw new Error(`Service "${name}" not found.`);
         }
 
         if (!definition.isShared()) {
@@ -121,11 +121,11 @@ export class Container extends AbstractParameterStorage implements ContainerInte
     protected initiateService<T>(definition: ServiceDefinition<T>): T {
         const constructor = definition.getConstructor();
         const args = this.resolveConstructorArguments(definition);
-        const initiated = new constructor(...args);
-        this.injectProperties(definition, initiated);
-        this.injectMethods(definition, initiated);
+        const service = new constructor(...args);
+        this.injectProperties(definition, service);
+        this.injectMethods(definition, service);
 
-        return initiated;
+        return service;
     }
 
     protected getInitiatedService<T>(definition: ServiceDefinition<T>): InitiatedService<T> | null {
@@ -139,19 +139,19 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         return null;
     }
 
-    protected resolveService(name: string) {
+    protected resolveService(expression: string) {
         // noinspection SuspiciousTypeOfGuard
-        if (typeof name === "string") {
-            if (name.startsWith("@")) {
-                const realName = name.slice(1);
-                return this.resolveDefinition(realName, this.builder.get(realName));
-            } else if (name.startsWith("!")) {
-                const realName = name.slice(1);
+        if (typeof expression === "string") {
+            if (expression.startsWith("@")) {
+                const name = expression.slice(1);
+                return this.resolveDefinition(name, this.builder.get(name));
+            } else if (expression.startsWith("!")) {
+                const name = expression.slice(1);
                 return this.builder
-                    .getByTag(realName)
-                    .map(definition => this.resolveDefinition(realName, definition));
-            } else if (name.startsWith("%") && name.endsWith("%")) {
-                return this.getParameter(name.slice(1, -1));
+                    .getByTag(name)
+                    .map(definition => this.resolveDefinition(name, definition));
+            } else if (expression.startsWith("%") && expression.endsWith("%")) {
+                return this.getParameter(expression.slice(1, -1));
             }
         }
 
@@ -168,22 +168,22 @@ export class Container extends AbstractParameterStorage implements ContainerInte
         return [];
     }
 
-    protected injectMethods<T>(definition: ServiceDefinition<T>, initiated: T) {
+    protected injectMethods<T>(definition: ServiceDefinition<T>, service: T) {
         const index: ServiceIndex | null = getServiceIndex(Inject.METHOD, definition.getPrototype());
         if (index) {
             const keys = Object.keys(index);
             for (const key of keys) {
-                initiated[key](this.resolveService(index[key]));
+                service[key](this.resolveService(index[key]));
             }
         }
     }
 
-    protected injectProperties<T>(definition: ServiceDefinition<T>, initiated: T) {
+    protected injectProperties<T>(definition: ServiceDefinition<T>, service: T) {
         const index: ServiceIndex | null = getServiceIndex(Inject.PROPERTY, definition.getPrototype());
         if (index) {
             const keys = Object.keys(index);
             for (const key of keys) {
-                initiated[key] = this.resolveService(index[key])
+                service[key] = this.resolveService(index[key])
             }
         }
     }

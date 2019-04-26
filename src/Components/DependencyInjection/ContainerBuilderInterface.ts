@@ -11,15 +11,10 @@ import {RepositoryInterface} from "../Repository/RepositoryInterface";
 import {Constructable} from "./Constructable";
 import {ServiceOptions} from "./ServiceOptions";
 import {ServiceDefinition} from "./ServiceDefinition";
-import {FileLoaderOptions} from "../FileLoader/FileLoaderOptions";
 
 export interface ContainerBuilderInterface extends RepositoryInterface<ServiceDefinition> {
 
     add<T = any>(service: Constructable<T>, options?: Partial<ServiceOptions>): this;
-
-    addDirectory(directory: string, options?: Partial<FileLoaderOptions>): this;
-
-    remove(name: string): this;
 
     get<T = any>(name: string): ServiceDefinition<T> | null;
 

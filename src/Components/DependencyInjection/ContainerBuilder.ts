@@ -13,26 +13,8 @@ import {Constructable} from "./Constructable";
 import {Service} from "./Decorator/Service";
 import {ServiceOptions} from "./ServiceOptions";
 import {ContainerBuilderInterface} from "./ContainerBuilderInterface";
-import * as path from "path";
-import {PropertyPath} from "../PropertyAccess/PropertyPath";
-import {PropertyPathInterface} from "../PropertyAccess/PropertyPathInterface";
-import {FileLoaderInterface} from "../FileLoader/FileLoaderInterface";
-import {FileLoader} from "../FileLoader/FileLoader";
-import {FileLoaderOptions} from "../FileLoader/FileLoaderOptions";
 
 export class ContainerBuilder extends AbstractRepository<ServiceDefinition> implements ContainerBuilderInterface {
-
-    protected fileLoader: FileLoaderInterface = new FileLoader();
-
-    protected static extractName(directory: string, file: string, property: string) {
-        const relativePath = path.relative(directory, file).slice(0, -path.extname(file).length);
-        let name: PropertyPathInterface = new PropertyPath(relativePath.replace(/[/\\]/g, "."));
-
-        if (property !== "default" && property !== path.basename(file, path.extname(file))) {
-            name = name.child(property);
-        }
-        return name;
-    }
 
     public add<T = any>(injectable: Constructable<T>, options?: Partial<ServiceOptions>): this {
         const definedOpts = Reflect.getMetadata(Service.OPTIONS, injectable.prototype);
@@ -76,40 +58,6 @@ export class ContainerBuilder extends AbstractRepository<ServiceDefinition> impl
         }
 
         return definitions;
-    }
-
-    public addDirectory(directory: string, options?: Partial<FileLoaderOptions>): this {
-        const files = this.fileLoader.loadDirectory(directory, options);
-
-        for (const file of files) {
-            const properties = Object.keys(file.contents);
-
-            for (const property of properties) {
-                const service = file.contents[property];
-
-                if (typeof service === "function") {
-                    const options = Reflect.getMetadata(Service.OPTIONS, service.prototype);
-
-                    if (!options || typeof options.name === "undefined") {
-                        const name = ContainerBuilder.extractName(directory, file.path, property);
-                        this.add(service, {name: name.toString()});
-                        continue;
-                    }
-
-                    this.add(service);
-                }
-            }
-        }
-
-        return this;
-    }
-
-    public remove(name: string): this {
-        const definition = this.get(name);
-        if (definition) {
-            delete this.items[definition.getName()];
-        }
-        return this;
     }
 
 }
