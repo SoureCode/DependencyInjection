@@ -1,6 +1,6 @@
 {
   "name": "@sourecode/sourecode",
-  "version": "0.1.0-DEV",
+  "version": "0.1.0",
   "description": "Simply create applications with this framework",
   "keywords": [
     "dependency",
