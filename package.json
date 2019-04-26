@@ -33,8 +33,7 @@
     "debug": "node $NODE_DEBUG_OPTION ./dist/index.js"
   },
   "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "minimatch": "^3.0.4"
+    "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {
     "express": "^4.16.4"
