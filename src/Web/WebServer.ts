@@ -11,12 +11,12 @@ import {Service} from "../DependencyInjection/Decorator/Service";
 import {Inject} from "../DependencyInjection/Decorator/Inject";
 import {ControllerInterface} from "./ControllerInterface";
 import {WebServerOptions} from "./WebServerOptions";
-import * as http from "http";
 import {RouteOptions} from "./RouteOptions";
 import {PropertyPath} from "../PropertyAccess/PropertyPath";
 import {Route} from "./Decorator/Route";
 import {RouteDefinition} from "./RouteDefinition";
 import {Application, NextFunction, Request, Response} from "express";
+import * as http from "http";
 
 @Service({name: "sourecode.webserver"})
 export class WebServer {
@@ -62,7 +62,7 @@ export class WebServer {
                 reject(error);
             });
 
-            this.httpServer.on('close', (error) => {
+            this.httpServer.on('close', () => {
                 resolve();
             });
 

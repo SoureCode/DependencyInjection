@@ -7,10 +7,4 @@
  * File that was distributed with this source code.
  */
 
-import "reflect-metadata";
-
-export * from "./Components/DependencyInjection";
-export * from "./Components/Parameter";
-export * from "./Components/PropertyAccess";
-export * from "./Components/Repository";
-export * from "./Components/Web";
+throw new Error(`Could not import package "@sourecode/sourecode". Please provide a module! Usage: require("@sourecode/sourecode/{MODULE}")`);

@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {AbstractParameterStorage} from "../src/Components/Parameter/AbstractParameterStorage";
+import {AbstractParameterStorage} from "../src/Parameter/AbstractParameterStorage";
 
 class ParameterStorage extends AbstractParameterStorage {
 }

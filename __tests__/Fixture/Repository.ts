@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {AbstractRepository} from "../../src/Components/Repository/AbstractRepository";
+import {AbstractRepository} from "../../src/Repository/AbstractRepository";
 import {Foo} from "./Foo";
 
 export class Repository extends AbstractRepository<Foo> {

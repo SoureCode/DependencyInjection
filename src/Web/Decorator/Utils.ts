@@ -7,6 +7,7 @@
  * File that was distributed with this source code.
  */
 
+import "reflect-metadata";
 import {RouteOptions} from "../RouteOptions";
 import {Route} from "./Route";
 import {Service} from "../../DependencyInjection/Decorator/Service";

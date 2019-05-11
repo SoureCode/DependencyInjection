@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {Container, ContainerBuilder, Inject, Service} from "../src/index";
+import {Container, ContainerBuilder, Inject, Service} from "../src/DependencyInjection";
 
 @Service({name: "foo"})
 class Foo {

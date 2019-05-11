@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {Container, ContainerBuilder, Inject} from "../src/index";
+import {Container, ContainerBuilder, Inject} from "../src/DependencyInjection";
 
 describe("Private Container", () => {
 

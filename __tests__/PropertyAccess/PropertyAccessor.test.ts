@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {PropertyAccessor} from "../../src/Components/PropertyAccess/PropertyAccessor";
+import {PropertyAccessor} from "../../src/PropertyAccess";
 
 describe("PropertyAccess", () => {
 

@@ -7,7 +7,6 @@
  * File that was distributed with this source code.
  */
 
-
 import {PropertyPathType} from "../PropertyAccess/PropertyPathType";
 
 export type Criteria<T> = ReadonlyArray<[PropertyPathType, T]>;

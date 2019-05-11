@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {PropertyPath} from "../../src/Components/PropertyAccess/PropertyPath";
+import {PropertyPath} from "../../src/PropertyAccess";
 
 describe("PropertyPath", () => {
 

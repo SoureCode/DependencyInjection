@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {ContainerBuilder} from "../src";
+import {ContainerBuilder} from "../src/DependencyInjection";
 import {PasswordStrategyOne} from "./Fixture/PasswordStrategyOne";
 import {PasswordStrategyTwo} from "./Fixture/PasswordStrategyTwo";
 

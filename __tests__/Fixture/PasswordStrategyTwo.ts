@@ -7,7 +7,7 @@
  * File that was distributed with this source code.
  */
 
-import {Service} from "../../src/Components/DependencyInjection/Decorator/Service";
+import {Service} from "../../src/DependencyInjection/Decorator/Service";
 import {PasswordStrategyInterface} from "./PasswordStrategyInterface";
 
 @Service({name: "strategy.two", tags: ["strategy"]})

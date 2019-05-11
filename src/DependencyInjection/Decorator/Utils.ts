@@ -7,6 +7,7 @@
  * File that was distributed with this source code.
  */
 
+import "reflect-metadata";
 import {Inject} from "./Inject";
 import {ServiceIndex} from "./ServiceIndex";
 import {ServiceOptions} from "../ServiceOptions";
