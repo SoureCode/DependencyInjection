@@ -7,4 +7,4 @@
  * File that was distributed with this source code.
  */
 
-throw new Error(`Could not import package "@sourecode/sourecode". Please provide a module! Usage: require("@sourecode/sourecode/{MODULE}")`);
+throw new Error(`Could not import package "@sourecode/sourecode". Please provide a module! Usage: require("@sourecode/sourecode/dist/{MODULE}")`);
